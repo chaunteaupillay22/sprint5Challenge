@@ -114,7 +114,7 @@ Reach out if you get too stuck, and have fun!
 
 **TASK 1:**
 
-For fetching, just **await** the Axios request to Endpoint A, and then await the request to Endpoint B. (_Optionally_, you can use `Promise.all` to handle both requests. We do not need the data from request A in order to _start_ request B, so the requests can happen concurrently instead of back-to-back.)
+ For fetching, just **await** the Axios request to Endpoint A, and then await the request to Endpoint B. (_Optionally_, you can use `Promise.all` to handle both requests. We do not need the data from request A in order to _start_ request B, so the requests can happen concurrently instead of back-to-back.)
 
 **TASK 2:**
 

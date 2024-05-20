@@ -9,8 +9,26 @@ async function sprintChallenge5() { // Note the async keyword so you can use `aw
   // ❗ Use the variables `mentors` and `learners` to store the data.
   // ❗ Use the await keyword when using axios.
 
-  let mentors = [] // fix this
-  let learners = [] // fix this
+    let learners = [];
+    let mentors = [];
+    
+    
+  const axios = require('axios');
+
+  try {
+    const [learnersResponse, mentorsResponse] = await Promise.all([
+      axios.get('http://localhost:3003/api/learners'),
+      axios.get('http://localhost:3003/api/mentors')
+    ]);
+
+    learners = learnersResponse.data;
+    mentors = mentorsResponse.data;
+
+  } catch (error) {
+    console.error("Error fetching data:", error); 
+    return; 
+  }
+
 
   // 👆 ==================== TASK 1 END ====================== 👆
 
@@ -28,7 +46,21 @@ async function sprintChallenge5() { // Note the async keyword so you can use `aw
   //     "Grace Hopper"
   //   ]`
   // }
-
+  const mentorMap = {};
+  mentors.forEach(mentor => {
+    mentorMap[mentor.id] = mentor.fullName;
+  });
+  
+  learners = learners.map(learner => {
+    const mentorNames = learner.mentors.map(mentorId => mentorMap[mentorId]); 
+    return {
+      id: learner.id,
+      fullName: learner.fullName,
+      email: learner.email,
+      mentors: mentorNames
+    };
+  }); 
+  
   // 👆 ==================== TASK 2 END ====================== 👆
 
   const cardsContainer = document.querySelector('.cards')
@@ -38,7 +70,7 @@ async function sprintChallenge5() { // Note the async keyword so you can use `aw
 
   // 👇 ==================== TASK 3 START ==================== 👇
 
-  for (let learner of learners) { // looping over each learner object
+   for (let learner of learners) { // looping over each learner object
 
     // 🧠 Flesh out the elements that describe each learner
     // ❗ Give the elements below their (initial) classes, textContent and proper nesting.
@@ -46,12 +78,41 @@ async function sprintChallenge5() { // Note the async keyword so you can use `aw
     // ❗ Also, loop over the mentors inside the learner object, creating an <li> element for each mentor.
     // ❗ Fill each <li> with a mentor name, and append it to the <ul> mentorList.
     // ❗ Inspect the mock site closely to understand what the initial texts and classes look like!
+  
 
-    const card = document.createElement('div')
-    const heading = document.createElement('h3')
-    const email = document.createElement('div')
-    const mentorsHeading = document.createElement('h4')
-    const mentorsList = document.createElement('ul')
+  
+    const card = document.createElement('div');
+    const heading = document.createElement('h3');
+    const email = document.createElement('div');
+    const mentorsHeading = document.createElement('h4');
+    const mentorsList = document.createElement('ul');
+
+    card.className = 'card';
+    heading.className = 'heading';
+    email.className = 'email';
+    mentorsHeading.className = 'mentors-heading closed'; // Initially closed
+    mentorsList.className = 'mentors-list';
+
+  
+    card.appendChild(heading);
+    card.appendChild(email);
+    card.appendChild(mentorsHeading);
+    card.appendChild(mentorsList); 
+
+    
+    learner.mentors.forEach(mentorName => {
+      const li = document.createElement('li');
+      li.textContent = mentorName;
+      mentorsList.appendChild(li);
+    });
+
+    
+    cardsContainer.appendChild(card);
+}
+}
+
+
+
 
     // 👆 ==================== TASK 3 END ====================== 👆
 
@@ -97,12 +158,12 @@ async function sprintChallenge5() { // Note the async keyword so you can use `aw
         }
       }
     })
-  }
+  
 
   const footer = document.querySelector('footer')
   const currentYear = new Date().getFullYear()
   footer.textContent = `© BLOOM INSTITUTE OF TECHNOLOGY ${currentYear}`
-}
+
 
 // ❗ DO NOT CHANGE THIS CODE. WORK ONLY INSIDE TASKS 1, 2, 3
 if (typeof module !== 'undefined' && module.exports) module.exports = { sprintChallenge5 }
